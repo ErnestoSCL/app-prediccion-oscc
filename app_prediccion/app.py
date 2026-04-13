@@ -18,9 +18,10 @@ st.set_page_config(
 # Aplicar estilos personalizados
 style.apply_custom_style()
 
-# Constantes
-MODEL_PATH = "models/best_model_efficientnet_variante.pth"
-SAMPLE_DIR = "assets/samples"
+# Definición robusta de rutas
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "best_model_efficientnet_variante.pth")
+SAMPLE_DIR = os.path.join(BASE_DIR, "assets", "samples")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 @st.cache_resource
