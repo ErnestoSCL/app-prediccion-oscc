@@ -7,7 +7,7 @@ El cáncer bucal es una de las neoplasias más prevalentes a nivel global. El ob
 
 ## Estructura del Repositorio
 - `app_prediccion/`: Código fuente de la aplicación web profesional (Streamlit).
-- `models/`: Pesos del modelo EfficientNet-B0 entrenado.
+- `models/`: Pesos del modelo EfficientNet-B0 y ResNet50 (VGG16 excluido por tamaño >500MB).
 - `notebooks/`: Flujos de trabajo de entrenamiento y preprocesamiento de imágenes.
 - `results/`: Métricas de validación, matriz de confusión e historial de entrenamiento.
 - `data_procesada/`: Incluye el `manifiesto.csv` con el catálogo de imágenes utilizadas.

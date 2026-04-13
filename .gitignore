@@ -12,8 +12,8 @@ data/
 data_procesada/*
 !data_procesada/manifiesto.csv
 
-# Models (Solo si son mayores a 100MB, pero este pesa 17MB, lo incluimos)
-# models/*.pth
+# Models (Solo si son mayores a 100MB)
+models/best_model_vgg16_*.pth
 
 # OS
 .DS_Store

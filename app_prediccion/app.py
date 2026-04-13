@@ -209,6 +209,8 @@ elif page == "Centro de Información":
         El código fuente, los procedimientos de aumentación de datos y el pipeline de entrenamiento están disponibles en:
         
         [github.com/ErnestoSCL/app-prediccion-oscc](https://github.com/ErnestoSCL/app-prediccion-oscc)
+        
+        *Nota: Los pesos de los modelos VGG16 no se incluyen en el repositorio debido a su gran tamaño (>500MB).*
         """)
         
     with col_tech:
