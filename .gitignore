@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Data
+data/
+data_procesada/*
+!data_procesada/manifiesto.csv
+
+# Models (Solo si son mayores a 100MB, pero este pesa 17MB, lo incluimos)
+# models/*.pth
+
+# OS
+.DS_Store
+Thumbs.db
