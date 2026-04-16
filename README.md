@@ -1,53 +1,93 @@
-# Diagnóstico Asistido de Carcinoma Oral (OSCC)
+# Prediccion Asistida de Carcinoma Oral (OSCC)
 
-Este repositorio contiene una plataforma de patología digital basada en aprendizaje profundo para la asistencia en el diagnóstico del **Carcinoma de Células Escamosas Orales (OSCC)** a partir de micrografías histopatológicas.
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-EE4C2C)](https://pytorch.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B)](https://streamlit.io/)
 
-## Propósito del Proyecto
-El cáncer bucal es una de las neoplasias más prevalentes a nivel global. El objetivo de esta herramienta es proporcionar a los patólogos una segunda opinión basada en datos, identificando regiones críticas mediante mapas de interpretabilidad (**Score-CAM**) y clasificando muestras de tejido con una precisión superior al 97%.
+Aplicacion de patologia digital para apoyo en la prediccion de **Carcinoma de Celulas Escamosas Orales (OSCC)** a partir de micrografias histopatologicas, con salida probabilistica e interpretabilidad visual mediante Score-CAM.
 
-## Estructura del Repositorio
-- `app_prediccion/`: Código fuente de la aplicación web profesional (Streamlit).
-- `models/`: Pesos del modelo EfficientNet-B0 y ResNet50 (VGG16 excluido por tamaño >500MB).
-- `notebooks/`: Flujos de trabajo de entrenamiento y preprocesamiento de imágenes.
-- `results/`: Métricas de validación, matriz de confusión e historial de entrenamiento.
-- `data_procesada/`: Incluye el `manifiesto.csv` con el catálogo de imágenes utilizadas.
+## Demo en vivo
 
-## Tecnologías Utilizadas
-- **Lenguaje**: Python 3.10+
-- **Deep Learning**: PyTorch & Torchvision (EfficientNet-B0)
-- **Interfaz**: Streamlit (Diseño minimalista inspirado en Google Stitch)
-- **Visión Artificial**: Score-CAM para interpretabilidad clínica.
-- **Gráficos y Datos**: Matplotlib, NumPy y Pandas.
+Puedes probar la aplicacion desplegada en Streamlit aqui:
 
-## Arquitectura del Modelo
-El sistema utiliza una arquitectura **EfficientNet-B0** como extractor de características dinámico, complementada con una cabeza de clasificación personalizada diseñada específicamente para este tipo de muestras:
-1. **Backbone**: EfficientNet-B0 (Compound Scaling).
-2. **Dense Head**: Capa de 256 neuronas con activación ReLU.
-3. **Regularización**: Batch Normalization y Dropout (30%) para asegurar la generalización del modelo.
-4. **Output**: Activación Sigmoide para la clasificación binaria (Normal vs. OSCC).
+- https://app-prediccion-oscc.streamlit.app/
 
-## Guía de Ejecución Local
-Para ejecutar la aplicación en su entorno local, siga estos pasos:
+## Objetivo del proyecto
+
+Este repositorio busca apoyar el tamizaje y priorizacion de casos de cancer bucal mediante vision por computadora, ofreciendo:
+
+- Clasificacion binaria (Normal vs OSCC).
+- Visualizacion de regiones de interes clinico (Score-CAM).
+- Interfaz web para evaluacion rapida por imagen.
+
+Aviso: herramienta de apoyo academico e investigativo. No reemplaza diagnostico de un profesional de patologia.
+
+## Arquitectura del modelo
+
+El sistema utiliza un backbone CNN con ajuste para clasificacion binaria:
+
+1. Backbone EfficientNet-B0 para extraccion de caracteristicas.
+2. Cabeza densa personalizada con 256 neuronas y activacion ReLU.
+3. Regularizacion con BatchNorm y Dropout (30%).
+4. Capa de salida sigmoide para estimacion de probabilidad de OSCC.
+
+## Estructura del repositorio
+
+```text
+app-prediccion-oscc/
+├── README.md
+├── app_prediccion/
+│   ├── app.py
+│   ├── model_utils.py
+│   ├── style.py
+│   ├── requirements.txt
+│   ├── assets/
+│   └── models/
+├── models/
+├── notebooks/
+├── results/
+└── data_procesada/
+```
+
+## Tecnologias utilizadas
+
+- Python 3.10+
+- PyTorch y Torchvision
+- Streamlit
+- NumPy, Pandas y Matplotlib
+- Score-CAM para interpretabilidad
+
+## Ejecucion local
 
 1. Clonar el repositorio:
-   ```bash
-   git clone https://github.com/ErnestoSCL/app-prediccion-oscc.git
-   cd app-prediccion-oscc
-   ```
+
+```bash
+git clone https://github.com/ErnestoSCL/app-prediccion-oscc.git
+cd app-prediccion-oscc
+```
 
 2. Instalar dependencias:
-   ```bash
-   pip install -r app_prediccion/requirements.txt
-   ```
 
-3. Lanzar Streamlit:
-   ```bash
-   python -m streamlit run app_prediccion/app.py
-   ```
+```bash
+pip install -r app_prediccion/requirements.txt
+```
 
-## Dataset Original
-El modelo fue entrenado con el conjunto de datos: **[Histopathological Imaging Dataset for Oral Cancer](https://www.kaggle.com/datasets/ashenafifasilkebede/dataset/data)**.
-**DOI**: 10.17632/ftmp4cvtmb.1
+3. Ejecutar la aplicacion:
 
----
-*Aviso: Esta herramienta es estrictamente para fines académicos y de apoyo a la investigación médica. No sustituye el juicio clínico de un patólogo certificado.*
+```bash
+python -m streamlit run app_prediccion/app.py
+```
+
+Por defecto, Streamlit abre la app en `http://localhost:8501`.
+
+## Datos y referencia
+
+Dataset base utilizado en entrenamiento:
+
+- Histopathological Imaging Dataset for Oral Cancer
+- https://www.kaggle.com/datasets/ashenafifasilkebede/dataset/data
+- DOI: 10.17632/ftmp4cvtmb.1
+
+## Licencia
+
+El proyecto se distribuye bajo licencia MIT.
