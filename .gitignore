@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.venv/
+*/.venv/
 
 # Jupyter Notebooks
 .ipynb_checkpoints
@@ -18,3 +20,8 @@ models/best_model_vgg16_*.pth
 # OS
 .DS_Store
 Thumbs.db
+
+# Environment
+.env
+.env.*
+!.env.example

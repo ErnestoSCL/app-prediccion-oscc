@@ -1,93 +1,216 @@
-# Prediccion Asistida de Carcinoma Oral (OSCC)
+# 🔬 Clasificación Histopatológica de Cáncer Bucal (OSCC) con IA
 
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB)](https://www.python.org/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-EE4C2C)](https://pytorch.org/)
-[![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B)](https://streamlit.io/)
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688)
+![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-Minikube-326CE5)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1)
 
-Aplicacion de patologia digital para apoyo en la prediccion de **Carcinoma de Celulas Escamosas Orales (OSCC)** a partir de micrografias histopatologicas, con salida probabilistica e interpretabilidad visual mediante Score-CAM.
+> [!WARNING]
+> **Aviso médico importante:** este repositorio es una **prueba de concepto académica** para investigación en patología digital. **No** es un dispositivo médico ni una herramienta de diagnóstico clínico, y no sustituye la evaluación de un profesional sanitario.
 
-## Demo en vivo
+## 📌 Resumen
 
-Puedes probar la aplicacion desplegada en Streamlit aqui:
+Este proyecto implementa un sistema de apoyo a clasificación histopatológica de imágenes H&E para distinguir entre:
 
-- https://app-prediccion-oscc.streamlit.app/
+- **Tejido epitelial normal**
+- **OSCC (Oral Squamous Cell Carcinoma)**
 
-## Objetivo del proyecto
+El pipeline está desacoplado en tres capas:
 
-Este repositorio busca apoyar el tamizaje y priorizacion de casos de cancer bucal mediante vision por computadora, ofreciendo:
+1. **Frontend Streamlit** para interacción clínica/visual.
+2. **API FastAPI** para inferencia y registro de predicciones.
+3. **PostgreSQL** para auditoría técnica de resultados.
 
-- Clasificacion binaria (Normal vs OSCC).
-- Visualizacion de regiones de interes clinico (Score-CAM).
-- Interfaz web para evaluacion rapida por imagen.
+Además incorpora visualización **Score-CAM** para interpretabilidad en la interfaz.
 
-Aviso: herramienta de apoyo academico e investigativo. No reemplaza diagnostico de un profesional de patologia.
+---
 
-## Arquitectura del modelo
+## 🧠 Modelo y enfoque ML
 
-El sistema utiliza un backbone CNN con ajuste para clasificacion binaria:
+- **Backbone:** EfficientNet-B0.
+- **Cabeza personalizada:** `Linear(1280,256) + BatchNorm + ReLU + Dropout(0.3) + Linear(256,1)`.
+- **Salida:** probabilidad binaria para clase OSCC mediante sigmoide.
+- **Preprocesamiento de inferencia:** resize a `224x224` + normalización ImageNet.
 
-1. Backbone EfficientNet-B0 para extraccion de caracteristicas.
-2. Cabeza densa personalizada con 256 neuronas y activacion ReLU.
-3. Regularizacion con BatchNorm y Dropout (30%).
-4. Capa de salida sigmoide para estimacion de probabilidad de OSCC.
+---
 
-## Estructura del repositorio
+## ⚙️ Arquitectura de sistema
+
+### Flujo end-to-end
+
+1. Usuario sube una imagen en Streamlit.
+2. Si `API_URL` está definida, Streamlit envía la imagen a FastAPI.
+3. FastAPI ejecuta inferencia con PyTorch.
+4. FastAPI registra resultado en PostgreSQL (si disponible).
+5. Streamlit muestra clase, confianza y mapa Score-CAM.
+
+```mermaid
+graph TD
+    UI[Streamlit app/app.py] -->|POST /predict| API[FastAPI api/main.py]
+    API -->|SQLAlchemy| DB[(PostgreSQL)]
+    UI -->|Score-CAM local| MODEL[PyTorch EfficientNet-B0]
+```
+
+---
+
+## 🗂️ Estructura real del repositorio
+
+> Esta sección refleja los archivos/carpetas actualmente presentes y versionados para el proyecto.
 
 ```text
-app-prediccion-oscc/
-├── README.md
-├── app_prediccion/
+app_prediccion_cancer_bucal_histopatologico/
+├── api/
+│   ├── __init__.py
+│   ├── database.py
+│   ├── Dockerfile
+│   ├── main.py
+│   ├── model.py
+│   ├── models_db.py
+│   └── utils.py
+├── app/
 │   ├── app.py
-│   ├── model_utils.py
+│   ├── inference.py
 │   ├── style.py
-│   ├── requirements.txt
-│   ├── assets/
-│   └── models/
+│   └── assets/
+│       └── samples/
+│           ├── Normal_100x_1.jpg
+│           ├── Normal_100x_53.jpg
+│           ├── Normal_400x_50.jpg
+│           ├── OSCC_100x_142.jpg
+│           └── OSCC_400x_109.jpg
+├── k8s/
+│   ├── api-deployment.yaml
+│   ├── api-service.yaml
+│   ├── postgres-deployment.yaml
+│   ├── postgres-pvc.yaml
+│   └── postgres-service.yaml
+├── data/
+│   ├── train/
+│   ├── val/
+│   └── test/
+├── data_procesada/
+│   ├── manifiesto.csv
+│   ├── train/
+│   ├── val/
+│   └── test/
 ├── models/
+│   ├── best_model_efficientnet_base.pth
+│   ├── best_model_efficientnet_variante.pth
+│   ├── best_model_resnet50_base.pth
+│   ├── best_model_resnet50_variante.pth
+│   ├── best_model_vgg16_base.pth
+│   └── best_model_vgg16_variante.pth
 ├── notebooks/
+│   ├── EDA.ipynb
+│   ├── ENTRENAMIENTO.ipynb
+│   └── PREPROCESAMIENTO.ipynb
 ├── results/
-└── data_procesada/
+│   ├── comparacion_final.csv
+│   ├── history_efficientnet_base.json
+│   ├── history_efficientnet_variante.json
+│   ├── history_resnet50_base.json
+│   ├── history_resnet50_variante.json
+│   ├── history_vgg16_base.json
+│   ├── history_vgg16_variante.json
+│   └── interpretabilidad/
+│       └── diagnostico_final_scorecam.png
+├── .env.example
+├── .gitignore
+├── docker-compose.yml
+├── README.md
+├── requirements-api.txt
+└── requirements-app.txt
 ```
 
-## Tecnologias utilizadas
+---
 
-- Python 3.10+
-- PyTorch y Torchvision
-- Streamlit
-- NumPy, Pandas y Matplotlib
-- Score-CAM para interpretabilidad
+## 🚀 Formas de ejecución
 
-## Ejecucion local
-
-1. Clonar el repositorio:
+### 1) Demo local (solo Streamlit, sin API)
 
 ```bash
-git clone https://github.com/ErnestoSCL/app-prediccion-oscc.git
-cd app-prediccion-oscc
+python -m venv .venv
+# Activar entorno virtual
+pip install -r requirements-app.txt
+streamlit run app/app.py
 ```
 
-2. Instalar dependencias:
+### 2) Streamlit + API local (sin Docker)
 
 ```bash
-pip install -r app_prediccion/requirements.txt
+python -m venv .venv
+# Activar entorno virtual
+pip install -r requirements-api.txt
+pip install -r requirements-app.txt
+
+uvicorn api.main:app --host 0.0.0.0 --port 8000
 ```
 
-3. Ejecutar la aplicacion:
+En otra terminal (PowerShell):
+
+```powershell
+$env:API_URL="http://localhost:8000"
+streamlit run app/app.py
+```
+
+### 3) Docker Compose (API + PostgreSQL)
 
 ```bash
-python -m streamlit run app_prediccion/app.py
+docker compose up --build -d
+docker compose ps
 ```
 
-Por defecto, Streamlit abre la app en `http://localhost:8501`.
+Luego ejecutar Streamlit (si no usas `.env`):
 
-## Datos y referencia
+```powershell
+$env:API_URL="http://localhost:8000"
+streamlit run app/app.py
+```
 
-Dataset base utilizado en entrenamiento:
+### 4) Kubernetes con Minikube (API + PostgreSQL)
 
-- Histopathological Imaging Dataset for Oral Cancer
-- https://www.kaggle.com/datasets/ashenafifasilkebede/dataset/data
-- DOI: 10.17632/ftmp4cvtmb.1
+```powershell
+minikube start --memory=4096 --cpus=2
+minikube docker-env | Invoke-Expression
 
-## Licencia
+kubectl apply -f k8s/postgres-pvc.yaml
+kubectl apply -f k8s/postgres-deployment.yaml
+kubectl apply -f k8s/postgres-service.yaml
 
-El proyecto se distribuye bajo licencia MIT.
+docker build -t medical-api:v1 -f api/Dockerfile .
+kubectl apply -f k8s/api-deployment.yaml
+kubectl apply -f k8s/api-service.yaml
+
+minikube service medical-api-service --url
+```
+
+---
+
+## 🧪 Endpoints API
+
+- `GET /health` → estado de servicio.
+- `GET /model-info` → metadatos del modelo.
+- `POST /predict` → inferencia desde archivo de imagen.
+
+Ejemplo rápido:
+
+```bash
+curl http://localhost:8000/health
+```
+
+---
+
+## 🧾 Dataset y referencia
+
+- Dataset en Kaggle: [Histopathological Imaging Dataset for Oral Cancer](https://www.kaggle.com/datasets/ashenafifasilkebede/dataset/data)
+- DOI: [10.17632/ftmp4cvtmb.1](https://doi.org/10.17632/ftmp4cvtmb.1)
+- Título original: *A histopathological image repository of normal epithelium of Oral Cavity and Oral Squamous Cell Carcinoma*
+
+---
+
+## 📄 Licencia
+
+Este proyecto se distribuye con fines académicos y de investigación. Si vas a publicarlo de forma abierta, añade una licencia explícita (por ejemplo MIT) en un archivo `LICENSE`.
