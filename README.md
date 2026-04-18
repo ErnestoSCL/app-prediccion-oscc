@@ -15,7 +15,7 @@
 
 Prueba la aplicación publicada en Streamlit Cloud:
 
-- https://app-prediccion-oscc-v1.streamlit.app/
+- [app-prediccion-oscc-v1.streamlit.app](https://app-prediccion-oscc-v1.streamlit.app/)
 
 ---
 
@@ -29,7 +29,7 @@ Este proyecto implementa un sistema de apoyo a clasificación histopatológica d
 El pipeline está desacoplado en tres capas:
 
 1. **Frontend Streamlit** para interacción visual e interpretabilidad.
-2. **API FastAPI** para serving del modelo y trazabilidad de inferencias.
+2. **API FastAPI** para servicio del modelo y trazabilidad de inferencias.
 3. **PostgreSQL** para registro técnico/auditoría de predicciones.
 
 Además, incorpora visualización **Score-CAM** para destacar regiones de interés morfológico.
@@ -59,6 +59,8 @@ Métricas extraídas de `results/comparacion_final.csv` sobre el conjunto de pru
 | Precision | **0.9776** |
 | Recall | **0.9704** |
 | Matriz de confusión | `[[244, 6], [8, 262]]` |
+
+Esta configuración prioriza un buen equilibrio entre sensibilidad y precisión para soporte diagnóstico.
 
 ### Comparativa breve de arquitecturas
 
@@ -159,13 +161,13 @@ app_prediccion_cancer_bucal_histopatologico/
 ├── results/                              # Resultados experimentales
 │   ├── comparacion_final.csv             # Tabla final de métricas por modelo
 │   ├── history_efficientnet_base.json    # Curvas entrenamiento EfficientNet base
-│   ├── history_efficientnet_variante.json# Curvas entrenamiento EfficientNet variante
+│   ├── history_efficientnet_variante.json # Curvas entrenamiento EfficientNet variante
 │   ├── history_resnet50_base.json        # Curvas entrenamiento ResNet50 base
 │   ├── history_resnet50_variante.json    # Curvas entrenamiento ResNet50 variante
 │   ├── history_vgg16_base.json           # Curvas entrenamiento VGG16 base
 │   ├── history_vgg16_variante.json       # Curvas entrenamiento VGG16 variante
 │   └── interpretabilidad/                # Artefactos de explicabilidad
-│       └── diagnostico_final_scorecam.png# Ejemplo visual de Score-CAM
+│       └── diagnostico_final_scorecam.png # Ejemplo visual de Score-CAM
 ├── .env.example                          # Plantilla de variables de entorno
 ├── .gitignore                            # Reglas de versionado
 ├── docker-compose.yml                    # Orquestación local API + PostgreSQL
