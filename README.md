@@ -122,7 +122,7 @@ app_prediccion_cancer_bucal_histopatologico/
 ├── docker-compose.yml
 ├── README.md
 ├── requirements-api.txt
-└── requirements-app.txt
+└── requirements.txt
 ```
 
 ---
@@ -134,7 +134,7 @@ app_prediccion_cancer_bucal_histopatologico/
 ```bash
 python -m venv .venv
 # Activar entorno virtual
-pip install -r requirements-app.txt
+pip install -r requirements.txt
 streamlit run app/app.py
 ```
 
@@ -144,7 +144,7 @@ streamlit run app/app.py
 python -m venv .venv
 # Activar entorno virtual
 pip install -r requirements-api.txt
-pip install -r requirements-app.txt
+pip install -r requirements.txt
 
 uvicorn api.main:app --host 0.0.0.0 --port 8000
 ```
